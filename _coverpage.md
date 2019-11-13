@@ -3,5 +3,5 @@
   Create clean, simple but powerful web applications and APIs quickly.
 </p>
 
-[GitHub](https://github.com/leafsphp/leafMVC)
+[Leaf Core](https://leaf-docs.netlify.com/v1.4.2/)
 [Get Started](#leafmvc)
