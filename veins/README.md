@@ -1,6 +1,6 @@
 # Leaf Veins
 Leaf Vein is the official templating engine of Leaf PHP. It focuses on keeping things simple and elegant. It comes pre-packaged with Leaf Core, which is the base of LeafMVC.
-Vein files are saved as `.vein`.
+Vein files are saved as `.vein.php`.
 
 **This tutorial is about Veins...not just LeafMVC**
 
@@ -13,7 +13,7 @@ C:.
 │   ├───controllers
 │   ├───views
 ```
-In our views, we can create `index.vein` which is going to be our view. Sample index.vein
+In our views, we can create `index.vein.php` which is going to be our view. Sample index.vein.php
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -63,15 +63,55 @@ $user = (object) [
 ];
 ```
 
-In order to use this object in our view, we'd have to pass this object through `assign()`
+In order to use this object in our view, we'd have to pass this object through `set()` and then render our view
 ```javascript
-$this->assign(["name" => $user->name]);
+$this->set(["name" => $user->name]);
+$this->render("app/views/index");
 ```
 
 Then we can access it with 
 ```html
 {$name}
 ```
+
+## Loops
+```html
+{loop="$items" as $item}
+	<div style="margin-bottom: 50px;">
+		<h3><a href="/items/{$item->id}">{$item->title}</a></h3>
+		<p>{$item->body}</p>
+	</div>
+{/loop}
+```
+
+Or 
+
+```html
+{loop="$items"}
+	<div style="margin-bottom: 50px;">
+		<h3><a href="/items/{$value->id}">{$value->title}</a></h3>
+		<p>{$value->body}</p>
+	</div>
+{/loop}
+```
+
+## If
+```html
+{if="count($posts) > 0"}
+	All Posts
+{/if}
+```
+
+## If else
+```html
+{if="count($posts) > 0"}
+	All Posts
+{else}
+	There are no posts
+{/if}
+```
+
+...
 
 <br>
 <br>
