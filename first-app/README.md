@@ -5,6 +5,17 @@ Note that all your development is done in the `app` directory. By default, a few
 ## Introduction
 For this "tutorial", we'll be building a simple project to learn about Leaf in general. We’re going to be building a simple blog to demonstrate how LeafMVC works. We’ll be using models, views, controllers, migrations, leaf’s command line tool and a whole lot of other tools provided for us.😎
 
+**NB**
+If you want to generate an application from the finished blog, you can run
+```bash
+composer create-project leafs/mvc <AppName> --prefer-dist dev-blog
+```
+This will create the blog application for you, so you simply have to link your database and run
+```bash
+php leaf db:seed
+```
+That's all, simple right?😂🙌
+
 In the [previous section](/?id=leafmvc), we looked at installation, LeafMVC's directory structure and a basic usage example, it's assumed you've already read this section.
 
 Also, we'll be using Leaf's console to generate our files, so, it's recommended that you check out [this section](/cmd/)
