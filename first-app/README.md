@@ -2,39 +2,23 @@
 Note that all your development is done in the `app` directory. By default, a few demos have been created to give you a quick idea on how LeafMVC works.
 
 
-# Introduction
-For this "tutorial", we'll be building a simple project to learn about Leaf in general. We're going to be simulating all the data in the model, i.e, we're not going to use a database in this "tutorial".
+## Introduction
+For this "tutorial", we'll be building a simple project to learn about Leaf in general. We’re going to be building a simple blog to demonstrate how LeafMVC works. We’ll be using models, views, controllers, migrations, leaf’s command line tool and a whole lot of other tools provided for us.😎
 
 In the [previous section](/?id=leafmvc), we looked at installation, LeafMVC's directory structure and a basic usage example, it's assumed you've already read this section.
 
 Also, we'll be using Leaf's console to generate our files, so, it's recommended that you check out [this section](/cmd/)
 
-Now that that's out of the way, we can start with our actual development. When we take a look at our `index.php` file, we see that Leaf Core is initialise with a couple of it's functions(`$request` and `$response`)
+Now that that’s out of the way, we can start with our actual development. When we take a look at our index.php file, we see that Leaf Core is initialised and our route config is also initialised.
 
-We're also importing our routes from `app/routes/routes.php`
-```javascript
-<?php
-require_once __DIR__ . '/vendor/autoload.php';
 
-require __DIR__. "/config/bootstrap.php";
+LeafMVC’s route config seperates routes into 2 categories: web routes and API routes. All routes which start with `/api` are considered as API routes by route config and are handled in `app/routes/api.php` all other routes are handled in `app/routes/web.php` in the case of this article, all routes will be handled in `app/routes/web.php️` 🤷‍♂️
 
-$leaf = new Leaf\Core\Leaf;
-$response = new Leaf\Core\Http\Response;
-$request = new Leaf\Core\Http\Request;
-$errors = new Leaf\Config\Errors;
 
-$errors->hide();
+We’ll be handling our routing in the web.php file. As mentioned before, LeafMVC runs on Leaf Core, routing and a whole lot of other cool features come directly from Leaf Core, so don’t forget to check out [Leaf PHP Framework](https://leaf-docs.netlify.com)🤞. 
 
-require __DIR__. "/app/routes/routes.php";
+Now, let’s get started.
 
-$leaf->run();
-```
-This is the index.php generated for you.
-
-As mentioned before, all our development happens in our `app` directory, so, let's move into our app directory. As we saw in `index.php`, our routes were defined in the `app/routes` directory. This will be a good starting point. Open up your `routes.php`
-
-(NB: Routing is a feature of Leaf Core)
-To use simple routing with leaf, you simply need to define individual routes to be handled by the Leaf Router. Lets look at that.
 ```javascript
 <?php
 $leaf->get('/', function() {
@@ -43,15 +27,18 @@ $leaf->get('/', function() {
 ```
 So we can return json encoded data for APIs, html and php pages, raw text......
 
+**See [routing docs](/routing/) for more on routing**
+
 But in this case we're workinh in an MVC environment, we would want controllers to handle various routes, so, let's do just that.
 
-Remember we talked about the Leaf Console? We're going to generate a controller now.
+The first thing we need to do to use a controller is obviously to create the controller. Our controllers are kept in `app/controllers` …you can manually create your controller in this directory, but there’s a better way😊. Remember we talked about the Leaf Console? We’re going to generate a controller now using the Leaf console tool. Open up your console and type:
 ```bash
-php leaf g:controller Pages
+php leaf g:controller PagesController
 ```
 This will generate a controller in our `app/controllers` directory
 
-Back in our `app/routes/routes.php` file, we can use this controller like so:
+
+Back in our `app/routes/web.php` file, we can use this controller like so:
 ```javascript
 $leaf->get('/home', '\App\Controllers\PagesController@index');
 ```
@@ -63,21 +50,11 @@ namespace App\Controllers;
 use Leaf\Core\Controller;
 
 class PagesController extends Controller {
-	public function __construct() {
-		parent::__construct();
-	}
 	public function index() {
 		$this->set([
 			"title" => "Leaf Vein Integration"
 		]);
 		$this->render("index");
-	}
-	public function create() {
-		
-	}
-	public function show() {
-	}
-	public function destroy() {
 	}
 }
 ```
@@ -111,7 +88,7 @@ public function index() {
 ```
 With this, we are passing the user object into our Vein Template. You can read more on Vein Templating [here](/templating/).
 
-Now, open up `app/views/index.vein` you're to see this
+Now, open up `app/views/index.vein.php` you're to see this
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -119,19 +96,21 @@ Now, open up `app/views/index.vein` you're to see this
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>{$title}</title>
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+ <title>{function="env('APP_NAME')"}</title>
+ <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/app/views/assets/css/bootstrap.min.css">
 </head>
 <body>
-	<h2>{$title}</h2>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+ <h2>Hi {$name}</h2>
+ <script src="/app/views/assets/js/jquery.min.js"></script>
+ <script src="/app/views/assets/js/bootstrap.min.js"></script>
 </body>
 </html>
 ```
 
 To use a variable passed into Veins, we use `{$variable}`, since we passed in the user object, we can use it's components here: eg `{$name}`. Lets see how that works.
 
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -139,28 +118,35 @@ To use a variable passed into Veins, we use `{$variable}`, since we passed in th
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>Index</title>
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+ <title>{function="env('APP_NAME')"}</title>
+ <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/app/views/assets/css/bootstrap.min.css">
 </head>
 <body>
-	<h2>{$name}</h2>
-	<p>{$email}</p>
-	{if="$verified"}
+	{if="$user->verified"}
 		<p>User is verified</p>
 	{else}
 		<p>User is not verified</p>
 	{/if}
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+	<h2>{$user->name}</h2>
+	<p>{$user->email}</p>
+	<script src="/app/views/assets/js/jquery.min.js"></script>
+	<script src="/app/views/assets/js/bootstrap.min.js"></script>
 </body>
 </html>
 ```
-Now, we've looked at our View and our Controller. Let's talk about Models. Our models are kept in the `app/models` directory. Models usually handle data: workk with databases, data storage...Models pass required information into our controller, which is then passed into the view. Let's first generate a model.
+Now, we've looked at our View and our Controller. Let's talk about Models. Our models are kept in the `app/models` directory. Models usually handle data: work with databases, data storage...Controllers get required information from models which is then passed to the view. We won't be doing much work in the model itself, since all the ground work has already been done by Leaf Core. Let's first generate a model.
 ```bash
-php leaf g:model Test
+php leaf g:model Post
+```
+This will generate a simple model
+
+
+If we want to add a migration to the model, we can run
+```bash
+php leaf g:model Post -m
 ```
 
-This will generate a simple model
 ```javascript
 <?php
     namespace App\Models;
@@ -170,71 +156,122 @@ This will generate a simple model
 
     use Leaf\Core\Model;
 
-    class Test extends Model {
+    class Post extends Model {
+        /**
+        * The attributes that are mass assignable.
+        *
+        * @var array
+        */
         protected $fillable = [
 
         ];
     }
 ```
-
-As mentioned before, we'll be faking all our data, we won't be using any database. So, in this case, the data we're going to be passing into our Controller is the user array we used earlier. 
-```javascript
-<?php
-    namespace App\Models;
-
-    use Leaf\Core\Database;
-    new Database();
-
-    use Leaf\Core\Model;
-
-    class Test extends Model {
-        public function getUser() {
-			// we get user from some source and save it as a user object
-			$user = (object) [
-				'name' => 'Jane Doe',
-				'email' => 'janedoe@gmail.com',
-				'verified' => true
-			];
-			// we return the user object
-			return $user;
-		}
-    }
+### IMPORTANT
+Now, we'll have to generate a controller to handle our `posts`, we'll name this `PostsController`
+```bash
+php leaf g:controller PostsController --resource
 ```
+We added the resource flag to it in order to generate a resource controller.
 
-To use this in our controller, we simply have to initialise the model in our controller. Let's edit the current controller we have now.
+When we look in `app/controllers/PostsController`, we see:
 ```javascript
 <?php
+
 namespace App\Controllers;
+
 use Leaf\Core\Controller;
+use Leaf\Core\Http\Request;
 
-// use our model
-use App\Models\Test;
+class PostsController extends Controller {
+    public function __construct() {
+        parent::__construct();
+        $this->request = new Request;
+    }
+    
+    /**
+     * Display a listing of the resource.
+     */
+    public function index() {
+        //
+    }
 
-class PagesController extends Controller {
-	public function __construct() {
-		parent::__construct();
-		// initialise the model
-		$this->test = new Test();
-	}
-	public function index() {
-		// get the user object from Test model
-		$user = $this->test->getUser();
-		// pass user into our view
-		$this->set($user);
-		$this->render("index");
-	}
-	public function create() {
-		
-	}
-	public function show() {
-	}
-	public function destroy() {
-	}
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create() {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store() {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show($id) {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit($id) {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update($id) {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy($id) {
+        //
+    }
 }
 ```
-Our View remains the same.
+A resource controller is filled with resource methods which quickly help us perform CRUD functions.
 
-With this basic set-up, we have just built an MVC application, not so useful, but it's still an MVC app😅😅
+***To use your database, you have to head to `.env` and configure your database: set the databse name, username, password...***
+So let's say we have a database named `blog` with a table named `posts` which has some data in it, to retrieve all the data in the `posts` table, we'll head to our controller. The first thing we'll have to do is to bring in our `Post` model. This will allow us to use our database.
+```javascript
+<?php
+
+namespace App\Controllers;
+
+use Leaf\Core\Controller;
+use Leaf\Core\Http\Request;
+
+// our model
+use App\Models\Post;
+
+class PostsController extends Controller {
+    public function __construct() {
+		.....
+```
+
+Now let's head over to our index method and enter this:
+```javascript
+public function index() {
+	$this->set([
+		"posts" => Post::all()
+	]);
+	$this->render("pages/index");
+```
+`Post::all()` is a method which will query our database and retrieve all our posts for us, we're using `$this->set()` to pass that data into our view and `$this->render()` to render the view. In this case we're trying to render `app/views/pages/index.vein.php`, but it doesn't yet exist, so let's generate it.
+
+```bash
+php leaf g:template pages/index
+```
 
 
 <br>

@@ -18,34 +18,47 @@ php leaf serve
 ```bash
 C:.
 ├───app
+│   ├───console
 │   ├───controllers
+│   │   └───Auth
+│   ├───database
+│   │   ├───factories
+│   │   ├───migrations
+│   │   └───seeds
 │   ├───helpers
-│   ├───migrations
 │   ├───models
 │   ├───routes
 │   └───views
-│       └───dist
+│       ├───assets
+│       │   ├───css
+│       │   ├───images
+│       │   └───js
+│       ├───components
+│       └───pages
+│           └───errors
 ├───config
-│   └───command
-│       └───stubs
-├───lib
 ├───public
 ├───storage
+│   ├───app
+│   │   └───public
+│   ├───framework
+│   │   └───views
+│   └───logs
 └───vendor
 ```
-As you can see, the structure of Leaf MVC isn't so different from other frameworks like Rails and Laravel, let's take a deeper look at the folder structure 
+In LeafMVC, ***app*** is where all your development goes on. “app” contains all your **models**, **views**(templates), **controllers**, **routes**, **custom console commands**, **helpers** and database related stuff(**migrations**, **seeds…**).
 
-`app` is where the main code for the app sits. All the controllers, models, views, helpers, migrations and routes. 
 
-`config` holds configuration files for the Leaf framework, ie, Command Line suuport and class autoloader 
+***config*** contains all the app configurations…configuration for routes, database, the leaf console, error handling, session, templating…however, you normally have no business with this folder
 
-`lib` is where additional library support would be kept if need be 
 
-`public` holds compiled assets which web browsers can use 
+***public*** holds web configuration😅😅.
 
-`storage` is meant to hold "uploaded" files 
 
-`vendor` is where all Leaf MVC's dependencies are kept.
+***storage*** holds all the app data, it contains both framework data and user files. For instance, uploaded files and pictures are kept in storage/app/public
+
+
+***vendor*** holds all of leafMVC’s dependencies
 
 
 ## Basic Usage

@@ -1,13 +1,13 @@
 # Leaf Console 
-This is a simple tool to help with project scaffolding. With this tool, you don't have to write your own models, migrations...from scratch. This console uses the `php` console, so you should have php path defined
+This is a simple tool to help with project scaffolding. With this tool, you don't have to write your own models, migrations...from scratch. This console uses the `php` console, so you should have php path defined😉
 
 ## Console Commands
 In your console, you can run `php leaf` or `php leaf list` to view all supported commands. Alternatively, here are all supported commands:
 
 ```bash
+LeafMVC Framework v1.3.0
 Usage:
   command [options] [arguments]
-
 Options:
   -h, --help            Display this help message
   -q, --quiet           Do not output any message
@@ -15,28 +15,29 @@ Options:
       --ansi            Force ANSI output
       --no-ansi         Disable ANSI output
   -n, --no-interaction  Do not ask any interactive question
-
+  -v|vv|vvv, --verbose  Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
 Available commands:
-  console           used to run leaf console
-  help              Displays help for a command
-  list              Lists commands
-  serve             command use to start php server on a port
-  start             command use to start php server on a port
+  example       Testing example command
+  help          Displays help for a command
+  list          Lists commands
+  serve         Run your Leaf app
+  stalk         Interact with your application
  d
-  d:controller      used to delete a controller
+  d:controller  Delete a controller
+  d:model       Delete a model
+  d:template    Delete a template
  db
-  db:migrate        used to run migrations
-  db:rollback       used to run migrations
-  db:seed           used to run seeds
+  db:migrate    Run the database migrations
+  db:rollback   Rollback all database migrations
+  db:seed       Seed the database with records
  g
-  g:api-controller  command to generate controller file
-  g:controller      command to generate controller file
-  g:helper          command to generate helper file
-  g:migration       A command used to create migration
-  g:model           A command used to create model
-  g:template        command to generate a new vein template
+  g:controller  Create a new controller class
+  g:helper      Create a new helper class
+  g:migration   Create a new migration file
+  g:model       Create a new model class
+  g:template    Create a new vein template
  ui
-  ui:auth           Scaffold basic login and registration views and routes
+  ui:auth       Scaffold basic login and registration views and routes
 ```
 
 <br>
