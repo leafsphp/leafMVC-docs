@@ -265,15 +265,79 @@ public function index() {
 	$this->set([
 		"posts" => Post::all()
 	]);
-	$this->render("pages/index");
+	$this->render("pages/posts");
 ```
-`Post::all()` is a method which will query our database and retrieve all our posts for us, we're using `$this->set()` to pass that data into our view and `$this->render()` to render the view. In this case we're trying to render `app/views/pages/index.vein.php`, but it doesn't yet exist, so let's generate it.
+`Post::all()` is a method which will query our database and retrieve all our posts for us, we're using `$this->set()` to pass that data into our view and `$this->render()` to render the view. In this case we're trying to render `app/views/pages/posts.vein.php`, but it doesn't yet exist, so let's generate it.
 
 ```bash
-php leaf g:template pages/index
+php leaf g:template pages/posts
 ```
 
+So we can open up our new template and add:
+```javascript
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>{function="env('APP_NAME')"}</title>
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link rel="stylesheet" href="/app/views/assets/css/bootstrap.min.css">
+</head>
+<body>
+	{include="../components/header"}
 
+	<div class="container">
+		<h2>All Posts</h2>
+		{if="count($posts) > 0"}
+			{loop="$posts" as $post}
+				<div style="margin-bottom: 50px;">
+					<h3><a href="/posts/{$post->id}">{$post->title}</a></h3>
+					<p>{$post->body}</p>
+					<small>Written on {$post->created_at}</small>
+				</div>
+			{/loop}
+		{else}
+			There are no posts
+		{/if}
+	</div>
+	<script src="/app/views/assets/js/jquery.min.js"></script>
+	<script src="/app/views/assets/js/bootstrap.min.js"></script>
+</body>
+</html>
+```
+This is supposed to output all the posts from the database, but one thing's missing: we don't have a route to view all the posts we output. So we head back to our `app/routes/web.php` and add:
+```javascript
+$leaf->setNamespace('\App\Controllers');
+
+$leaf->get('/', 'PagesController@index');
+
+$leaf->get('/posts', 'PostsController@index');
+```
+So when we navigate to `/posts` in our browser, we see all our posts
+
+In our controller,
+```php
+// get posts ordered by title
+Post::orderBy('title', 'desc')->get();
+
+// get a particular post
+Post::find($id);
+
+// find a post by title
+Post::where('title', 'Post Two')->get();
+
+// create a new post
+$post = new Post;
+$post->title = $this->request->getParam("title");
+$post->body = $this->request->getParam("body");
+$post->save();
+
+// delete a post
+$post = Post::find($id);
+$post->delete();
+```
 <br>
 <br>
 
