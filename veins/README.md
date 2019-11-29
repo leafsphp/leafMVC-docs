@@ -74,6 +74,37 @@ Then we can access it with
 {$name}
 ```
 
+## Variables
+```html
+{$variable}
+{$object.key}
+{$object->key}
+{$array->key}
+```
+
+## Connstants
+```html
+{#constant#}
+```
+
+## Function
+```html
+{function="function"}
+```
+
+## Include
+```html
+{include="templateName"}
+```
+
+## No parse
+Commenting in Vein
+```html
+{noparse}
+	code
+{/noparse}
+```
+
 ## Loops
 ```html
 {loop="$items" as $item}
@@ -111,7 +142,20 @@ Or
 {/if}
 ```
 
-...
+## AutoEscape
+This has a lot of uses...but the most common use case is for rendering HTML
+```javascript
+$this->set([
+	"post" => [
+		"body" => "<h2>This is the body</h2>"
+	]
+]);
+```
+```html
+{autoescape="off"}
+	{$post.body}
+{/autoescape}
+```
 
 <br>
 <br>
