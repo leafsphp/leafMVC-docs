@@ -112,7 +112,7 @@ Now, open up `app/views/index.vein.php` you're to see this
     <link rel="stylesheet" href="/app/views/assets/css/bootstrap.min.css">
 </head>
 <body>
- <h2>Hi {$name}</h2>
+ <h2>Hi {$user->name}</h2>
  <script src="/app/views/assets/js/jquery.min.js"></script>
  <script src="/app/views/assets/js/bootstrap.min.js"></script>
 </body>
@@ -328,14 +328,75 @@ $leaf->get('/posts', 'PostsController@index');
 ```
 So when we navigate to `/posts` in our browser, we see all our posts
 
+
+For a blog app, we'd usually want to see our latest posts first, so we can order the posts by the time they were created. In our controller,
+```javascript
+public function index() {
+	$this->set([
+		"posts" => Post::orderBy('created_at', 'desc')->get()
+	]);
+	$this->render("pages/posts");
+```
+This will get the latest posts first.
+
+
+Next, we'll want to show a particular post when we click on the post title, to do this, we'll create a new template `post.vein.php`
+```bash
+php leaf g:template pages/post
+```
+
+We'll then render this in our show function in the PostsController
+```javascript
+public function show($id) {
+    $this->render("pages/post");
+}
+```
+Note that show() takes in an id, this id is the id of the post we want to show. This id will come from our route: `posts/id`. So, we need to set up a route for this.
+```javascript
+$leaf->setNamespace('\App\Controllers');
+
+$leaf->get('/', 'PagesController@index');
+
+$leaf->get('/posts', 'PostsController@index');
+$leaf->get('/posts/{id}', 'PostsController@show');
+```
+
+When we go to /posts/2 in our browser, we see the template we created before....but we'll want to actually see the post...so, in our controller's show method, we simply have to get that particular post and pass it into the view. We can get the current post with `Post::find($id);`
+```javascript
+public function show($id) {
+    $this->set([
+        "post" => Post::find($id)
+    ]);
+    $this->render("pages/post");
+}
+```
+
+Then, we can render this in our template
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+ <title>{function="env('APP_NAME')"}</title>
+ <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/app/views/assets/css/bootstrap.min.css">
+</head>
+<body>
+	<h2>{$post.title}</h2>
+	<p>
+        {autoescape="off"}
+            {$post.body}
+        {/autoescape}
+    </p>
+	<script src="/app/views/assets/js/jquery.min.js"></script>
+	<script src="/app/views/assets/js/bootstrap.min.js"></script>
+</body>
+</html>
+```
 In our controller,
-```php
-// get posts ordered by title
-Post::orderBy('title', 'desc')->get();
-
-// get a particular post
-Post::find($id);
-
+```javascript
 // find a post by title
 Post::where('title', 'Post Two')->get();
 
